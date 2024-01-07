@@ -1,0 +1,69 @@
+<%- include('partials/header'); -%>
+
+<div id="add">
+    <form id="new">
+    <h2>Įkelti naują skelbimą</h2>
+    <p>Pavadinimas:</p>
+    <input type="text" name="title" placeholder="Prašome įrašyti pavadinimą" required>
+    
+    <p>Aprašymas:</p>
+    <textarea id="about" name="about" rows="4" cols="50" placeholder="Prašome įrašyti aprašymą" required></textarea>
+
+    <p>Kategorijos:</p>
+    <select name="category" id="category">
+        <option value="Transportas">Transportas</option>
+        <option value="Nekilnojamasis turtas">Nekilnojamasis turtas</option>
+        <option value="Buitis">Buitis</option>
+        <option value="Kompiuterija">Kompiuterija</option>
+        <option value="Technika">Technika</option>
+        <option value="Pramogos">Pramogos</option>
+        <option value="Drabužiai">Drabužiai</option>
+        <option value="Auginantiems vaikus">Auginantiems vaikus</option>
+    </select>
+
+    <p>Kaina:</p>
+    <input type="number" min="1" name="price" placeholder="Prašome įrašyti kainą" required>
+
+    <input type="submit" value="Įkelti">
+    
+    </form>
+</div>
+
+<script>
+
+    const form = document.getElementById('new')
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault()
+        // paimti reiksmes
+        const title = form.title.value
+        const about = form.about.value
+        const select = document.querySelector('select[name="category"]');
+        const category = Array.from(select.selectedOptions).map(option => option.value);
+        const price = form.price.value
+
+        try{
+            const res = await fetch('/api/skelbimai', {
+                method: 'POST',
+                body: JSON.stringify({title, about, category, price}),
+                headers: {'Content-Type': 'application/json'}
+            })
+
+            if(!res.ok) {
+                throw new Error('Something is wrong')
+            }
+
+            const data = await res.json()
+            console.log('New ad was added: ', data)
+
+            window.location.assign('/')
+
+        } catch(err) {
+            console.log(err)
+        }
+
+    })
+
+</script>
+
+<%- include('partials/footer'); -%>

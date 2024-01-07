@@ -1,0 +1,64 @@
+<%- include('partials/header'); -%>
+
+
+<div id="add">
+    <form id="new">
+    <h2>Keisti skelbimo "<%= ad.title %>" duomenis</h2>
+    <p>Pavadinimas:</p>
+    <input type="text" name="title" value="<%= ad.title %>" required>
+
+    <p>Aprašymas:</p>
+    <textarea id="about" name="about" rows="4" cols="50" required><%= ad.about %></textarea>
+
+    <p>Kategorijos:</p>
+    <select name="category" id="category">
+        <option value="Transportas">Transportas</option>
+        <option value="Nekilnojamasis turtas">Nekilnojamasis turtas</option>
+        <option value="Buitis">Buitis</option>
+        <option value="Kompiuterija">Kompiuterija</option>
+        <option value="Technika">Technika</option>
+        <option value="Pramogos">Pramogos</option>
+        <option value="Drabužiai">Drabužiai</option>
+        <option value="Auginantiems vaikus">Auginantiems vaikus</option>
+    </select>
+
+    <p>Kaina:</p>
+    <input type="number" name="price" value="<%= ad.price %>" required>
+
+    <input type="submit" value="Keisti">
+    
+    </form>
+</div>
+
+<script>
+
+    const form = document.getElementById('new')
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault()
+        // paimti reiksmes
+        const title = form.title.value
+        const about = form.about.value
+        const select = document.querySelector('select[name="category"]');
+        const category = Array.from(select.selectedOptions).map(option => option.value)
+        const price = form.price.value
+
+        try{
+            const res = await fetch(`/api/skelbimai/<%= ad._id %>`, {
+                method: 'PUT',
+                body: JSON.stringify({title, about, category, price}),
+                headers: {'Content-Type': 'application/json'}
+            })
+
+            if(res) {
+                window.location.assign('/')
+            }
+
+        } catch(err) {
+            console.log(err)
+        }
+    })
+
+</script>
+
+<%- include('partials/footer'); -%>
